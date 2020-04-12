@@ -2,9 +2,9 @@
 Tasks taking app with MongoDB.
 
 #### Features 
-- Uses `express` as the backend webserver
-- Uess `handlebar` as the templating engine
-- Uses `Heroku` for deployment
+- Uses `mongodb` as the backend webserver
+
+http://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html#insertOne
 
 ## Application Stack
 
@@ -18,15 +18,10 @@ Stack  | version |
 *Build env* | Hereku
 
 ## NPM Modules (Local)
-> npm install yargs
-
 > npm install chalk
 
-> npm install got
+> npm install mongodb
 
-> npm install express
-
-> npm install hbs
 
 ## Application Run
 
