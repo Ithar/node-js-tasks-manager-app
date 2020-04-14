@@ -27,7 +27,6 @@ client.connect(connectionURL, { useNewUrlParser: true }, (error, client) => {
     //searchUserById('5e93587a86ae1642483ded1a', db)
     //updateUserById('5e93587a86ae1642483ded1a', db)
     //deleteUsersByIds(['5e93587a86ae1642483ded1a'], db)
-
     //searchTasksByDate('12-05-2020', db)
     //completeTasks(['5e93587a86ae1642483ded1b', '5e941a77bc087c42405285e1'], true, db)
 
