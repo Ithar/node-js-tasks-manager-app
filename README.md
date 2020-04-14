@@ -26,6 +26,10 @@ Stack  | version |
 
 > npm install mongoose
 
+> npm install validator
+
+> npm install password-validator
+
 ## Application Run
 
 
