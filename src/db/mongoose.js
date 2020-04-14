@@ -31,30 +31,31 @@ const dbService = {
             })
             .catch((err) => {
                 console.log(chalk.red('DB: Failed to list users due to: ' + err))
-                res.send({
+                res.status(500).send({
                     error: 'Unbale to list users at present'
                 })
             })
 
-    }, save(model, res) {
+    }, 
+    save(model, res) {
 
         model.save()
             .then((result) => {
                 console.log(chalk.green('DB: Model saved'))
-                res.send(model)
+                res.status(201).send(result)
             }).catch((err) => {
                 console.log(chalk.red('DB: Error failed to save model due to:\t' + err))
 
-                if(err.errors !== undefined) {
+                if (err.errors !== undefined) {
                     return res.status(400).send({
-                                error: err.errors
-                            })
+                        error: err.errors
+                    })
                 }
-               
+
                 res.status(500).send({
                     error: 'Failed to save user'
                 })
-                
+
             })
     }
 }

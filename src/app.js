@@ -1,7 +1,7 @@
 const chalk = require('chalk')
 const express = require('express')
-
 const userService = require('./service/userService')
+const taskService = require('./service/taskService')
 
 const app = express()
 const port =  process.env.PORT || 3000
@@ -19,19 +19,13 @@ app.use(express.json())
 app.get('/users', (req, res) => {
     userService.listUsers(res);
 })
-
 app.post('/user', (req, res) => {
     userService.saveUser(req, res);
 })
 
 // Tasks
 app.post('/tasks', (req, res) => {
-
-    console.log(req.body)
-    res.send({
-        message: 'new task created'
-    })
-    
+    taskService.saveTasks(req, res)    
 })
 
 

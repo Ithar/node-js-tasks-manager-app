@@ -10,16 +10,13 @@ const taskService = {
 
         dbService.findAll(myTask, res);
     },
-    saveTasks(tasksJson) {
-        dbService.saveUser();
+    saveTasks(req, res) {
+        
+        const task = new Task(req.body);
+
+        dbService.save(task, res);
     }
 
-       // task1.save()
-    //     .then((result) => {
-    //         console.log(chalk.green('Task Saved'))
-    //     }).catch((error) => {
-    //         console.log(chalk.red('Error failed to save task'))
-    //     })
 
 
 }
