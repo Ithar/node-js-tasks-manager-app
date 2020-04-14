@@ -2,26 +2,32 @@
   "name": "node-js-tasks-app",
   "version": "1.0.0",
   "description": "Tasks manager app with MongoDB.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start" : "src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ithar/node-js-tasks-app.git"
+    "url": "git+https://github.com/Ithar/node-js-tasks-manager-app.git"
   },
   "keywords": [],
   "author": "Ithar Malik",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Ithar/node-js-tasks-app/issues"
+    "url": "https://github.com/Ithar/node-js-tasks-manager-app/issues"
   },
-  "homepage": "https://github.com/Ithar/node-js-tasks-app#readme",
+  "homepage": "https://github.com/Ithar/node-js-tasks-manager-app#readme",
   "dependencies": {
     "chalk": "^4.0.0",
+    "express": "^4.17.1",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.7",
+    
     "password-validator": "^5.0.3",
     "validator": "^13.0.0"
+  }, 
+  "devDependencies": {
+    "nodemon": "^2.0.3"  
   }
 }

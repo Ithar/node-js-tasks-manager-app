@@ -30,8 +30,17 @@ Stack  | version |
 
 > npm install password-validator
 
+> npm install express
+
+> npm install nodemon
+
 ## Application Run
 
+cd node-js-tasks-manager-app
+
+Set-ExecutionPolicy -Scope Process RemoteSigned
+
+npm run dev
 
 ## Application URL
 
