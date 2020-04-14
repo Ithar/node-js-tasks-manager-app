@@ -4,7 +4,9 @@ Tasks taking app with MongoDB.
 #### Features 
 - Uses `mongodb` as the backend webserver
 
-http://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html#insertOne
+http://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html
+
+https://mongoosejs.com/docs/
 
 ## Application Stack
 
@@ -22,6 +24,7 @@ Stack  | version |
 
 > npm install mongodb
 
+> npm install mongoose
 
 ## Application Run
 
