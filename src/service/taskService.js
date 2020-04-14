@@ -5,10 +5,11 @@ dbService.connect()
 
 const taskService = {
 
-    listUsers(res) {
-        const myTask = new Task();
-
-        dbService.findAll(myTask, res);
+    listTasks(res) {
+        dbService.findAll(Task, res);
+    },
+    findTask(req, res) {
+        dbService.findById(Task, req.params.id, res)
     },
     saveTasks(req, res) {
         
@@ -16,8 +17,6 @@ const taskService = {
 
         dbService.save(task, res);
     }
-
-
 
 }
 

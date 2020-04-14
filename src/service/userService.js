@@ -9,14 +9,18 @@ const userService = {
     listUsers(res) {
 
         try {
-            const user = new User()
-            dbService.findAll(user, res)
+            dbService.findAll(User, res)
         } catch (err) {
             console.log(chalk.red('Failed to list users.'))
             res.status(500).send({
                 error: 'Failed to list users'
             })
         }
+
+    },
+    findUser(req, res) {
+
+        dbService.findById(User, req.params.id , res)
 
     },
     saveUser(req, res) {

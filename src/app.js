@@ -19,11 +19,20 @@ app.use(express.json())
 app.get('/users', (req, res) => {
     userService.listUsers(res);
 })
+app.get('/user/:id', (req, res) => {
+    userService.findUser(req, res);
+})
 app.post('/user', (req, res) => {
     userService.saveUser(req, res);
 })
 
 // Tasks
+app.get('/task/:id', (req, res) => {
+    taskService.findTask(req, res);
+})
+app.get('/tasks', (req, res) => {
+    taskService.listTasks(res)    
+})
 app.post('/tasks', (req, res) => {
     taskService.saveTasks(req, res)    
 })

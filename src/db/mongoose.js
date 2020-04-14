@@ -30,13 +30,35 @@ const dbService = {
                 res.send(docs)
             })
             .catch((err) => {
-                console.log(chalk.red('DB: Failed to list users due to: ' + err))
+                console.log(chalk.red('DB: Failed to list model due to: ' + err))
                 res.status(500).send({
-                    error: 'Unbale to list users at present'
+                    error: 'Unbale to list model at present'
                 })
             })
-
     }, 
+    findById(model, id, res) {
+
+        model.findById(id)
+        .then((doc) => {
+            console.log(chalk.blue('DB: Find by id  ... ' + id))
+
+            if (!doc) {
+                return res.status(404).send({
+                    message: 'Resource not found by id:' + id
+                })
+            }
+
+            res.send(doc)
+            
+        })
+        .catch((err) => {
+            console.log(chalk.red('DB: Failed to find by id due to: ' + err))
+            res.status(500).send({
+                error: 'Unbale to find by id at present'
+            })
+        })
+
+    },
     save(model, res) {
 
         model.save()
@@ -53,11 +75,12 @@ const dbService = {
                 }
 
                 res.status(500).send({
-                    error: 'Failed to save user'
+                    error: 'Failed to save model'
                 })
 
             })
     }
+
 }
 
 
