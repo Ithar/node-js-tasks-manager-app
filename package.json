@@ -4,7 +4,7 @@
   "description": "Tasks manager app with MongoDB.",
   "main": "app.js",
   "scripts": {
-    "start" : "src/app.js",
+    "start": "src/app.js",
     "dev": "nodemon src/app.js"
   },
   "repository": {
@@ -19,15 +19,15 @@
   },
   "homepage": "https://github.com/Ithar/node-js-tasks-manager-app#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "chalk": "^4.0.0",
     "express": "^4.17.1",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.7",
-    
     "password-validator": "^5.0.3",
     "validator": "^13.0.0"
-  }, 
+  },
   "devDependencies": {
-    "nodemon": "^2.0.3"  
+    "nodemon": "^2.0.3"
   }
 }

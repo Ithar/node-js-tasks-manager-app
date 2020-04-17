@@ -112,10 +112,19 @@ const userService = {
 
         console.log(chalk.blue('Updateing user with id' + id))
 
-        dbService.update(User, id, body)
+        const updateKeys = Object.keys(body);
+
+        if (!this.isValidUpdate(updateKeys)) {
+            res.status(400).send({
+                success: false,
+                msg : 'Invalid updates fields'
+            })
+        }
+
+        dbService.findAndUpdate(User, id, body, updateKeys)
             .then(user => {
 
-                if (!user) {
+                if (user === undefined) {
                     res.status(404).send({
                         success: false,
                         msg: 'Cannot update user not found with id ' + id
@@ -130,6 +139,10 @@ const userService = {
                     error: 'An error occured trying to update a user due to ' + e
                 })
             })
+    },
+    isValidUpdate(updateKeys) {
+        const allowedKeys = ['username', 'email', 'password']
+        return updateKeys.every((update) => allowedKeys.includes(update))
     }
 }
 

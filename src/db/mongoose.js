@@ -49,7 +49,18 @@ const dbService = {
         return dto;
     },
     async update(model, id, body) {
+        // this method by passes the pre/post hooks hence use findAndUpdate
         return await model.findByIdAndUpdate(id, body, {new: true, runValidators: true})
+    }, 
+    async findAndUpdate(model, id, body, updateKeys) {
+        const foundModel = await model.findById(id);
+
+        if (foundModel) {
+            updateKeys.forEach((update) => foundModel[update] = body[update])
+            return await foundModel.save();
+        } else {
+            return undefined
+        }        
     }
 
 }

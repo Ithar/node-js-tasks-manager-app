@@ -1,10 +1,28 @@
+const chalk = require('chalk')
 const mongoose = require('mongoose')
 const validator = require('validator')
 const passwordValidator = require('password-validator')
+const bcrypt = require('bcryptjs')
 
-const passwordSchema = setUpPasswordSehcma();
+const passwordComposition = setPasswordComposition();
 
-const User = mongoose.model('User', {
+function setPasswordComposition() {
+
+    var pwdValidator = new passwordValidator();
+
+    pwdValidator
+        .is().min(7)                                    // Minimum length 8
+        .is().max(100)                                  // Maximum length 100
+        .has().uppercase()                              // Must have uppercase letters
+        .has().lowercase()                              // Must have lowercase letters
+        .has().digits()                                 // Must have digits
+        .has().not().spaces()                           // Should not have spaces
+        .is().not().oneOf(['Password', 'Passw0rd', 'Password123']); // Blacklist 
+
+    return pwdValidator
+}
+
+const userSchema = new mongoose.Schema({
     username: {
         type: String,
         default: 'anonymous',
@@ -16,10 +34,7 @@ const User = mongoose.model('User', {
         trim: true,
         validate(email) {
             if (!validator.isEmail(email)) {
-                console.log('EMAIL -- ERROR --');
                 throw new Error('Please enter a valid email');
-            } else {
-                console.log('EMAIL -- OK --');
             }
         }
     },
@@ -28,7 +43,7 @@ const User = mongoose.model('User', {
         required: true,
         trim: true,
         validate(pwd) {
-            if (!passwordSchema.validate(pwd)) {
+            if (!passwordComposition.validate(pwd)) {
                 throw new Error('Password does not meet criteria');
             }
         }
@@ -39,20 +54,17 @@ const User = mongoose.model('User', {
     }
 })
 
-function setUpPasswordSehcma() {
+userSchema.pre('save', async function(next) {
+    const user = this
 
-    var schema = new passwordValidator();
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8);
+        console.log(chalk.blue('Password has been hashed'))
+    }   
+    
+    next() // informs the hook is completed it's work
+})
 
-    schema
-        .is().min(7)                                    // Minimum length 8
-        .is().max(100)                                  // Maximum length 100
-        .has().uppercase()                              // Must have uppercase letters
-        .has().lowercase()                              // Must have lowercase letters
-        .has().digits()                                 // Must have digits
-        .has().not().spaces()                           // Should not have spaces
-        .is().not().oneOf(['Password', 'Passw0rd', 'Password123']); // Blacklist 
-
-    return schema
-}
+const User = mongoose.model('User', userSchema)
 
 module.exports = User
