@@ -1,56 +1,17 @@
 const chalk = require('chalk')
 const express = require('express')
-const userService = require('./service/userService')
-const taskService = require('./service/taskService')
+const userRouter = require('./routers/usersRouter')
+const taskRouter = require('./routers/taskssRouter')
 
-const app = express()
 const port =  process.env.PORT || 3000
+const app = express()
 
 // ##########
 // Settings
 // ##########
 app.use(express.json())
-
-// ###########
-// REST APIS
-// ###########
-
-// Users 
-app.get('/users', (req, res) => {
-    userService.listUsers(res);
-})
-app.post('/user', (req, res) => {
-    userService.saveUser(req, res);
-})
-app.get('/user/:id', (req, res) => {
-    userService.findUser(req, res);
-})
-app.delete('/user:id', (req, res) => {
-    userService.delete(res);
-})
-app.patch('/user/:id', (req, res) => {
-    userService.updateUser(req, res);
-})
-
-// Tasks
-app.get('/tasks', (req, res) => {
-    taskService.listTasks(res)    
-})
-app.post('/task', (req, res) => {
-    taskService.saveTasks(req, res)    
-})
-app.get('/task/:id', (req, res) => {
-    taskService.findTask(req, res);
-})
-app.delete('/task/:id', (req, res) => {
-    taskService.deleteTask(req, res);
-})
-app.patch('/task/:id', (req, res) => {
-    taskService.updateTask(req, res);
-})
-
-
-
+app.use(userRouter)
+app.use(taskRouter)
 
 app.listen(port, () => {
     console.log('\n---------------------------------------------------')
