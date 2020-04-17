@@ -7,15 +7,65 @@ dbService.connect()
 const taskService = {
 
     listTasks(res) {
-        dbService.findAll(Task, res);
+        console.log(chalk.blue('Listing tasks ... '))
+
+        dbService.findAll(Task, res)
+        .then((task) => {
+            res.send(task)
+        })
+        .catch((err) => {
+            console.log(chalk.red('Failed to list tasks due to: ' + err))
+            res.status(500).send({
+                success: false,
+                error: 'Unbale to list tasks at present'
+            })
+        })
     },
     findTask(req, res) {
         const id = req.params.id
+        console.log(chalk.blue('Find task by id:' + id))
         dbService.findById(Task, id, res)
+        .then((task) => {
+            
+            if (!task) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'Task not found by id:' + id
+                })
+            } 
+                
+            res.send(task)
+            
+        })
+        .catch((err) => {
+            console.log(chalk.red('Failed to find task by id due to: ' + err))
+            res.status(500).send({
+                success: false,
+                error: 'Unbale to task find by id at present'
+            })
+        })
     },
     saveTasks(req, res) {
         const task = new Task(req.body);
-        dbService.save(task, res);
+        console.log(chalk.blue('Create/update a task'))
+        dbService.save(task, res)
+        .then((result) => {
+            res.status(201).send(result)
+        }).catch((err) => {
+            
+            if (err.errors !== undefined) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Failed to create a task.',
+                    error: err.errors
+                })
+            }
+
+            res.status(500).send({
+                success: false,
+                error: 'Failed to save task'
+            })
+        })
     },
     deleteTask(req, res) {
         const id = req.params.id
