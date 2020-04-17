@@ -48,6 +48,9 @@ const dbService = {
 
         return dto;
     },
+    async update(model, id, body) {
+        return await model.findByIdAndUpdate(id, body, {new: true, runValidators: true})
+    }
 
 }
 

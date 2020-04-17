@@ -9,9 +9,19 @@ const userService = {
     listUsers(res) {
 
         try {
-            dbService.findAll(User, res)
+            dbService.findAll(User)
+                .then((user) => {
+                    res.send(user)
+                })
+                .catch((err) => {
+                    console.log(chalk.red('Failed to list users due to: ' + err))
+                    res.status(500).send({
+                        success: false,
+                        error: 'Unbale to list tasks at present'
+                    })
+                })
         } catch (err) {
-            console.log(chalk.red('Failed to list users.'))
+            console.log(chalk.red('Failed to list users due to.' + err))
             res.status(500).send({
                 error: 'Failed to list users'
             })
@@ -20,19 +30,107 @@ const userService = {
     },
     findUser(req, res) {
 
-        dbService.findById(User, req.params.id , res)
+        const id = req.params.id
+        console.log(chalk.blue('Find user by id:' + id))
+        dbService.findById(User, id)
+            .then((user) => {
+
+                if (!user) {
+                    return res.status(404).send({
+                        success: false,
+                        message: 'User not found by id:' + id
+                    })
+                }
+
+                res.send(user)
+
+            })
+            .catch((err) => {
+                console.log(chalk.red('Failed to find user by id due to: ' + err))
+                res.status(500).send({
+                    success: false,
+                    error: 'Unbale to user find by id at present'
+                })
+            })
 
     },
     saveUser(req, res) {
 
-        
+        console.log(chalk.blue('Creating user'))
+
         const user = new User(req.body)
-
         // TODO [IM 14-04-20] - check email before save
-        
-        dbService.save(user, res);
-    }
 
+        dbService.save(user)
+            .then((user) => {
+                res.status(201).send(user)
+            }).catch((err) => {
+
+                if (err.errors !== undefined) {
+                    return res.status(400).send({
+                        success: false,
+                        message: 'Failed to create a user.',
+                        error: err.errors
+                    })
+                }
+
+                res.status(500).send({
+                    success: false,
+                    error: 'Failed to save user'
+                })
+            })
+    },
+    deleteUser(req, res) {
+        const id = req.params.id
+        console.log(chalk.blue('Deleting user by id' + id));
+
+        dbService.delete(User, id, {})
+            .then((user) => {
+
+                if (user) {
+                    res.send({
+                        success: true,
+                        msg: 'User with id ' + user.id + ' was deleted successfully.'
+                    })
+                } else {
+                    res.status(404).send({
+                        success: false,
+                        msg: 'Unable to delete cannot find user with id ' + id
+                    })
+                }
+            })
+            .catch((e) => {
+                res.status(500).send({
+                    success: false,
+                    error: 'An error occured trying to delete user due to ' + e
+                })
+            })
+    },
+    updateUser(req, res) {
+        const id = req.params.id
+        const body = req.body
+
+        console.log(chalk.blue('Updateing user with id' + id))
+
+        dbService.update(User, id, body)
+            .then(user => {
+
+                if (!user) {
+                    res.status(404).send({
+                        success: false,
+                        msg: 'Cannot update user not found with id ' + id
+                    })
+                }
+
+                res.send(user)
+            })
+            .catch((e) => {
+                res.status(500).send({
+                    success: false,
+                    error: 'An error occured trying to update a user due to ' + e
+                })
+            })
+    }
 }
 
 module.exports = userService
