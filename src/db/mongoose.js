@@ -16,8 +16,10 @@ const dbService = {
             mongoose.connect(this.url(), {
                 useNewUrlParser: true,
                 useCreateIndex: true,
-                useUnifiedTopology: true
+                useUnifiedTopology: true,
+                useFindAndModify : false
             })
+
         }
 
         connected = true;
@@ -49,8 +51,9 @@ const dbService = {
         return dto;
     },
     async update(model, id, body) {
-        // this method by passes the pre/post hooks hence use findAndUpdate
-        return await model.findByIdAndUpdate(id, body, {new: true, runValidators: true})
+        // this method does not apply pre/post hooks hence use findAndUpdate 
+        // for user models 
+        return await model.findByIdAndUpdate(id, body, {new: true, runValidators: true, useFindAndModify: true})
     }, 
     async findAndUpdate(model, id, body, updateKeys) {
         const foundModel = await model.findById(id);
@@ -65,7 +68,4 @@ const dbService = {
 
 }
 
-
 module.exports = dbService
-
-

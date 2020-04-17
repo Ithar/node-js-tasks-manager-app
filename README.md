@@ -2,8 +2,11 @@
 Tasks taking app with MongoDB.
 
 #### Features 
-- Uses `mongodb` as the backend webserver
+- Uses `mongodb` as the backend database
+- Uses `moongoose` framework for entity modeling & validation
+- Uses pre save hooks to hash passwords using `bcryptjs`
 
+#### Docs
 http://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html
 
 https://mongoosejs.com/docs/
