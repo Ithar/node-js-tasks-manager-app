@@ -30,6 +30,9 @@ app.post('/user', (req, res) => {
 app.get('/task/:id', (req, res) => {
     taskService.findTask(req, res);
 })
+app.delete('/task/:id', (req, res) => {
+    taskService.deleteTask(req, res);
+})
 app.get('/tasks', (req, res) => {
     taskService.listTasks(res)    
 })

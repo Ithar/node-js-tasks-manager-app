@@ -79,7 +79,24 @@ const dbService = {
                 })
 
             })
-    }
+    }, 
+    async delete (model, id) {
+        return await model.findByIdAndDelete(id, {})
+    }, 
+    async count(model, filter) {
+        return await model.CountDocuments(filter);
+    },
+    async deleteAndCount (model, id, filter) {
+        const deletedModel = await model.findByIdAndDelete(id, {})
+        const count = await model.countDocuments(filter);
+
+        const dto = {
+            model: deletedModel,
+            count
+        }
+
+        return dto;
+    },
 
 }
 
