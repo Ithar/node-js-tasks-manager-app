@@ -143,6 +143,24 @@ const userService = {
     isValidUpdate(updateKeys) {
         const allowedKeys = ['username', 'email', 'password']
         return updateKeys.every((update) => allowedKeys.includes(update))
+    }, 
+    async loginUser(req, res) {
+
+        const email = req.body.email
+        const  password = req.body.password
+
+        console.log(chalk.blue('Attempting to login user with email: ' + email))
+
+        try {
+            const user = await User.findByCredentials(email, password)
+            res.send(user)
+        } catch(e) {
+            res.status(400).send({
+                success: false,
+                error: e.message
+            })
+        }
+        
     }
 }
 

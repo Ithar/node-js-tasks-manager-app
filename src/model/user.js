@@ -4,24 +4,6 @@ const validator = require('validator')
 const passwordValidator = require('password-validator')
 const bcrypt = require('bcryptjs')
 
-const passwordComposition = setPasswordComposition();
-
-function setPasswordComposition() {
-
-    var pwdValidator = new passwordValidator();
-
-    pwdValidator
-        .is().min(7)                                    // Minimum length 8
-        .is().max(100)                                  // Maximum length 100
-        .has().uppercase()                              // Must have uppercase letters
-        .has().lowercase()                              // Must have lowercase letters
-        .has().digits()                                 // Must have digits
-        .has().not().spaces()                           // Should not have spaces
-        .is().not().oneOf(['Password', 'Passw0rd', 'Password123']); // Blacklist 
-
-    return pwdValidator
-}
-
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -31,6 +13,8 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
+        lowercase: true,
         trim: true,
         validate(email) {
             if (!validator.isEmail(email)) {
@@ -54,6 +38,28 @@ const userSchema = new mongoose.Schema({
     }
 })
 
+// Model Custom Methods 
+userSchema.statics.findByCredentials = async (email, pwd) => {
+    const user = await User.findOne({email})
+
+    if (!user) {
+        console.log(chalk.yellow('No user found with email' + email))
+        throw new Error('Unable to login')
+    }
+    
+    const isMatch = await bcrypt.compare(pwd, user.password)
+
+    if (!isMatch) {
+        console.log(chalk.yellow('User found but password mismatch ' + pwd))
+        throw new Error('Unable to login.')
+    }
+
+    console.log(chalk.blue('User login passed for email: ' + email))
+
+    return user
+}
+
+// Model Hooks
 userSchema.pre('save', async function(next) {
     const user = this
 
@@ -66,5 +72,24 @@ userSchema.pre('save', async function(next) {
 })
 
 const User = mongoose.model('User', userSchema)
+
+// Password Validation 
+const passwordComposition = setPasswordComposition();
+
+function setPasswordComposition() {
+
+    var pwdValidator = new passwordValidator();
+
+    pwdValidator
+        .is().min(7)                                    // Minimum length 8
+        .is().max(100)                                  // Maximum length 100
+        .has().uppercase()                              // Must have uppercase letters
+        .has().lowercase()                              // Must have lowercase letters
+        .has().digits()                                 // Must have digits
+        .has().not().spaces()                           // Should not have spaces
+        .is().not().oneOf(['Password', 'Passw0rd', 'Password123']); // Blacklist 
+
+    return pwdValidator
+}
 
 module.exports = User

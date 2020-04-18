@@ -18,5 +18,8 @@ router.delete('/user:id', (req, res) => {
 router.patch('/user/:id', (req, res) => {
     userService.updateUser(req, res);
 })
+router.post('/user/login', (req, res) => {
+    userService.loginUser(req, res);
+})
 
 module.exports = router

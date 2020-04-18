@@ -37,6 +37,8 @@ Stack  | version |
 
 > npm install nodemon
 
+> npm install jsonwebtoken
+
 ## Application Run
 
 cd node-js-tasks-manager-app
