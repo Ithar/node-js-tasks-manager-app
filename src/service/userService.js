@@ -1,5 +1,6 @@
 const chalk = require('chalk')
 const dbService = require('./../db/mongoose')
+const tokenService = require('./../service/tokenService')
 const User = require('./../model/user')
 
 dbService.connect()
@@ -153,7 +154,11 @@ const userService = {
 
         try {
             const user = await User.findByCredentials(email, password)
-            res.send(user)
+            
+            res.send({
+                email : user.email,
+                token : tokenService.generateToken(user)
+            })
         } catch(e) {
             res.status(400).send({
                 success: false,

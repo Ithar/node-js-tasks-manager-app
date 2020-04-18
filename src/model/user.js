@@ -32,13 +32,22 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
-    loginCount: { 
+    failedLoginCount: { 
         type: Number,
         default: 0
     }
 })
 
-// Model Custom Methods 
+// INSTANCE methods 
+userSchema.methods.printUser = async () => {
+    const user = this
+    console.log('-----------');
+    console.log('username:' + user.username);
+    console.log('email:' + user.email);
+    console.log('-----------');
+}
+
+// STATIC methods 
 userSchema.statics.findByCredentials = async (email, pwd) => {
     const user = await User.findOne({email})
 
