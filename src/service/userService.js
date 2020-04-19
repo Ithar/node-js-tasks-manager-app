@@ -161,10 +161,12 @@ const userService = {
 
         try {
             const user = await User.findByCredentials(email, password)
+            const token = await tokenService.generateToken(user)
             
             res.send({
+                name : user.username,
                 email : user.email,
-                token : tokenService.generateToken(user)
+                token : token
             })
         } catch(e) {
             res.status(400).send({
