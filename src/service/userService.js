@@ -63,8 +63,15 @@ const userService = {
         // TODO [IM 14-04-20] - check email before save
 
         dbService.save(user)
-            .then((user) => {
-                res.status(201).send(user)
+            .then(async (user) => {
+
+                const token = await tokenService.generateToken(user)
+                
+                res.status(201).send({
+                    name: user.username,
+                    email : user.email,
+                    token : token
+                })
             }).catch((err) => {
 
                 if (err.errors !== undefined) {

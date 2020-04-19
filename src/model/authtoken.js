@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const AuthToken = mongoose.model('AuthToken', {
-    user_id: { 
+    userId: { 
         type: String,
         required: true
     },
@@ -9,7 +9,6 @@ const AuthToken = mongoose.model('AuthToken', {
         type: String,
         required: true
     }
-    
 })
 
 module.exports = AuthToken

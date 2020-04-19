@@ -1,6 +1,7 @@
 const chalk = require('chalk')
 const jwt = require('jsonwebtoken')
 const AuthToken = require('./../model/authtoken')
+
 const tokenService = {
 
     getSecrect()  {
@@ -10,19 +11,15 @@ const tokenService = {
         return '15 minutes'
     },
     async generateToken(user) {
-
         const id = user._id.toString()
-
         const token = await jwt.sign({_id: id}, tokenService.getSecrect(), {expiresIn: tokenService.getExpiresTime()}) 
-
-        saveAuthToken(id, token)
-
+        tokenService.saveAuthToken(id, token)
         return token
     },
-    isVerified(id, token) {
+    isVerified(userId, token) {
 
         try {
-            const token = jwt.verify(token, tokenService.getSecrect())
+            const matchedToken = jwt.verify(token, tokenService.getSecrect())
 
             // TODO [IM 20-04-18] - Get the user Id and match
 
@@ -31,11 +28,21 @@ const tokenService = {
             return false;
         }
     },
-    async saveAuthToken(id, token) {
-        const authToken = new AuthToken();
-        authToken.user_id= id;
-        authToken.token = token
-        await authToken.save();
+    saveAuthToken(userId, token) {
+
+        AuthToken.findOne({userId: userId})
+        .then((authToken) => {
+           
+            if (!authToken) {
+                authToken = new AuthToken()
+                authToken.userId= userId
+            }
+
+            authToken.token = token
+            authToken.save();
+        }).catch( (e) =>{
+            console.log(chalk.red('Failed to save user auth token for user id ' + userId))
+        })
     }
 
 }
