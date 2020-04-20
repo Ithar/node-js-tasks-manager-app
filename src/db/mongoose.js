@@ -60,14 +60,14 @@ const dbService = {
     // },
     async update(model, body, updateKeys) {
         updateKeys.forEach((update) => model[update] = body[update])
-        return await model.save();
+        return await model.save()
     }, 
     async findAndUpdate(model, id, body, updateKeys) {
         const foundModel = await model.findById(id);
 
         if (foundModel) {
             updateKeys.forEach((update) => foundModel[update] = body[update])
-            return await foundModel.save();
+            return await foundModel.save()
         } else {
             return undefined
         }        

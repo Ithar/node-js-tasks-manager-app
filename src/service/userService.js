@@ -125,7 +125,7 @@ const userService = {
         if (!this.isValidUpdate(updateKeys)) {
             res.status(400).send({
                 success: false,
-                msg: 'Invalid updates fields'
+                msg: 'Invalid updates fields user'
             })
         }
 

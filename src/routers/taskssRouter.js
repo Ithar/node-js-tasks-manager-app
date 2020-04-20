@@ -11,7 +11,7 @@ router.get('/tasks', auth, (req, res) => {
     taskService.listTasks(req, res)    
 })
 
-// Create Task
+// Get Single Task
 router.get('/task/:id', auth, (req, res) => {
     taskService.findTask(req, res);
 })

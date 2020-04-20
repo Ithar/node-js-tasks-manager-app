@@ -94,30 +94,47 @@ const taskService = {
                 })
             })
     },
-    updateTask(req, res) {
-        const id = req.params.id
+    async updateTask(req, res) {
+        const taskId = req.params.id
         const body = req.body
+        const user = req.user
 
-        console.log(chalk.blue('Updateing task with id' + id))
+        console.log(chalk.blue('Updateing task with id' + taskId))
+        
+        const updateFields = Object.keys(body);
 
-        dbService.update(Task, id, body)
-            .then(task => {
-
-                if (!user) {
-                    res.status(404).send({
-                        success: false,
-                        msg: 'Cannot update task not found with id ' + id
-                    })
-                }
-
-                res.send(user)
+        if (!taskService.isValidUpdate(updateFields)) {
+            res.status(400).send({
+                success: false,
+                msg: 'Invalid updates fields for task'
             })
-            .catch((e) => {
-                res.status(500).send({
+        }
+
+        await user.populate('myTasks').execPopulate()
+        
+        try  {
+            const task = user.myTasks.filter((task) => task.id === taskId )
+        
+            if (!task) {
+                res.status(404).send({
                     success: false,
-                    error: 'An error occured trying to update a task due to ' + e
+                    msg: 'Cannot update task not found with id ' + id
                 })
+            }
+
+            const updatedTask = await dbService.update(task, body, updateFields)
+            res.send(updatedTask)
+
+        } catch(e) {
+            res.status(500).send({
+                success: false,
+                error: 'An error occured trying to update a task due to ' + e
             })
+        }
+    },
+    isValidUpdate(updatedFields) {
+        const allowedFields = ['name', 'desc', 'dueDate', 'completed']
+        return updatedFields.every((field) => allowedFields.includes(field))
     }
 }
 
