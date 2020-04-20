@@ -65,34 +65,37 @@ const taskService = {
             })
         }        
     },
-    deleteTask(req, res) {
-        const id = req.params.id
-        console.log(chalk.blue('Deleting task by id' + id));
+    async deleteTask(req, res) {
+        const taskId = req.params.id
+        const user = req.user
+        console.log(chalk.blue('Deleting task by id' + taskId));
 
-        dbService.deleteAndCount(Task, id, {})
-            .then((dto) => {
+        try {
 
-                const task = dto.model
+            const task = await dbService.findOne(Task, {_id : taskId, userId : user._id})
+
+            if (task) {                
+                const dto = await dbService.deleteAndCount(Task, task._id, {userId : user._id})
                 const count = dto.count
 
-                if (task) {
-                    res.send({
-                        success: true,
-                        msg: 'Task with id ' + task.id + ' was deleted successfully. [' + count + '] tasks remaining'
-                    })
-                } else {
-                    res.status(404).send({
-                        success: false,
-                        msg: 'Unable to delete cannot find task with id ' + id + '. [' + count + '] tasks remaining.'
-                    })
-                }
-            })
-            .catch((e) => {
-                res.status(500).send({
-                    success: false,
-                    error: 'An error occured trying to delete task due to ' + e
+                res.send({
+                    success: true,
+                    msg: 'Task with id ' + taskId + ' was deleted successfully. [' + count + '] tasks remaining'
                 })
+            } else {
+                res.status(404).send({
+                    success: false,
+                    msg: 'Unable to delete cannot find task with id ' + taskId + '. [' + count + '] tasks remaining.'
+                })
+            }
+
+        } catch (e) {
+            console.log(chalk.red('Delete failed due to ' + e))
+            res.status(500).send({
+                success: false,
+                error: 'An error occured trying to delete a task'
             })
+        }            
     },
     async updateTask(req, res) {
         const taskId = req.params.id
@@ -110,13 +113,11 @@ const taskService = {
             })
         }
 
-        await user.populate('myTasks').execPopulate()
-        
         try  {
-            const task = user.myTasks.filter((task) => task.id === taskId )
+            const task = await dbService.findOne(Task, {_id : taskId, userId : user._id})
         
             if (!task) {
-                res.status(404).send({
+                return res.status(404).send({
                     success: false,
                     msg: 'Cannot update task not found with id ' + id
                 })
@@ -126,9 +127,10 @@ const taskService = {
             res.send(updatedTask)
 
         } catch(e) {
+            console.log(chalk.red('Delete failed due to ' + e))
             res.status(500).send({
                 success: false,
-                error: 'An error occured trying to update a task due to ' + e
+                error: 'An error occured trying to update a task '
             })
         }
     },

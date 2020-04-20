@@ -30,20 +30,21 @@ const dbService = {
     async findById(model, id) {
         return await model.findById(id);
     },
+    async findOne(model, filter) {
+        return await model.findOne(filter);
+    },
     async save(model) {
         return await model.save();
     }, 
     async deleteById (model, id) {
         return await model.findByIdAndDelete(id, {})
     },
-    async delete (model) {
-        return await model.deleteOne({})
+    async delete (model, id) {
+        return await model.deleteOne({_id: id})
     }, 
-    async count(model, filter) {
-        return await model.CountDocuments(filter);
-    },
     async deleteAndCount (model, id, filter) {
-        const deletedModel = await model.findByIdAndDelete(id, {})
+
+        const deletedModel = await model.deleteOne({_id: id})
         const count = await model.countDocuments(filter);
 
         const dto = {
@@ -53,13 +54,16 @@ const dbService = {
 
         return dto;
     },
+    async count(model, filter) {
+        return await model.countDocuments(filter);
+    },
     // async update(model, id, body) {
     //     // this method does not apply pre/post hooks hence use findAndUpdate 
     //     // for user models 
     //     return await model.findByIdAndUpdate(id, body, {new: true, runValidators: true, useFindAndModify: true})
     // },
-    async update(model, body, updateKeys) {
-        updateKeys.forEach((update) => model[update] = body[update])
+    async update(model, body, updateFields) {
+        updateFields.forEach((field) => model[field] = body[field])
         return await model.save()
     }, 
     async findAndUpdate(model, id, body, updateKeys) {

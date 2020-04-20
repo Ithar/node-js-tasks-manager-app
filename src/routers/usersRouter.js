@@ -48,7 +48,7 @@ router.delete('/user', auth, (req, res) => {
 
 // Update User
 router.patch('/user', auth, (req, res) => {
-    userService.updateUser(res, req.user);
+    userService.updateUser(req, res);
 })
 
 module.exports = router

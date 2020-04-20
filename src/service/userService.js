@@ -88,7 +88,9 @@ const userService = {
             })
     },
     deleteUser(req, res) {
-        const id = req.user.id
+        const user = req.user
+        const id = user._id
+
         console.log(chalk.blue('Deleting user by id' + id));
 
         dbService.delete(user)
@@ -98,7 +100,7 @@ const userService = {
                     authService.expireAuthToken(req)
                     res.send({
                         success: true,
-                        msg: 'User with id ' + user.id + ' was deleted successfully.'
+                        msg: 'You have successfully deleted your account'
                     })
                 } else {
                     res.status(404).send({
@@ -114,39 +116,34 @@ const userService = {
                 })
             })
     },
-    updateUser(res, user) {
-        const id = user.id
+    async updateUser(req, res) {
+        const user = req.user
         const body = req.body
+        const id = user.id
+
 
         console.log(chalk.blue('Updateing user with id' + id))
 
-        const updateKeys = Object.keys(body);
+        const updateFields = Object.keys(body);
 
-        if (!this.isValidUpdate(updateKeys)) {
+        if (!this.isValidUpdate(updateFields)) {
             res.status(400).send({
                 success: false,
                 msg: 'Invalid updates fields user'
             })
         }
 
-        dbService.update(user, body, updateKeys)
-            .then(user => {
+        try {
+            const updatedUser = await dbService.update(user, body, updateFields )
+            res.send(updatedUser)
 
-                if (user === undefined) {
-                    res.status(404).send({
-                        success: false,
-                        msg: 'Cannot update user not found with id ' + id
-                    })
-                }
-
-                res.send(user)
+        } catch (e) {
+            console.log(chalk.red('An error occured trying to update a user due to ' + e))
+            res.status(500).send({
+                success: false,
+                error: 'Cannot update at present, please try later '
             })
-            .catch((e) => {
-                res.status(500).send({
-                    success: false,
-                    error: 'An error occured trying to update a user due to ' + e
-                })
-            })
+        }
     },
     isValidUpdate(updatedFields) {
         const allowedFields = ['username', 'email', 'password']
