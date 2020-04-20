@@ -19,26 +19,6 @@ router.post('/user', (req, res) => {
     userService.saveUser(req, res);
 })
 
-// Gets User Me
-router.get('/user/me', auth, (req, res) => {
-    res.send(req.user)
-})
-
-// Gets User
-router.get('/user/:id', auth, (req, res) => {
-    userService.findUser(req, res);
-})
-
-// Delete User
-router.delete('/user:id', auth, (req, res) => {
-    userService.delete(res);
-})
-
-// Update User
-router.patch('/user/:id', auth, (req, res) => {
-    userService.updateUser(req, res);
-})
-
 // Login User
 router.post('/user/login', (req, res) => {
     userService.loginUser(req, res);
@@ -47,6 +27,28 @@ router.post('/user/login', (req, res) => {
 // Logout User
 router.put('/user/logout', (req, res) => {
     userService.logoutUser(req, res);
+})
+
+// Authenticated User Endpoints
+
+// Gets User Me
+router.get('/user/me', auth, (req, res) => {
+    res.send(req.user)
+})
+
+// Gets User
+router.get('/user', auth, (req, res) => {
+    res.send(req.user)
+})
+
+// Delete User
+router.delete('/user', auth, (req, res) => {
+    userService.deleteUser(req, res);
+})
+
+// Update User
+router.patch('/user', auth, (req, res) => {
+    userService.updateUser(res, req.user);
 })
 
 module.exports = router

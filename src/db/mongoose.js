@@ -33,8 +33,11 @@ const dbService = {
     async save(model) {
         return await model.save();
     }, 
-    async delete (model, id) {
+    async deleteById (model, id) {
         return await model.findByIdAndDelete(id, {})
+    },
+    async delete (model) {
+        return await model.deleteOne({})
     }, 
     async count(model, filter) {
         return await model.CountDocuments(filter);
@@ -50,10 +53,14 @@ const dbService = {
 
         return dto;
     },
-    async update(model, id, body) {
-        // this method does not apply pre/post hooks hence use findAndUpdate 
-        // for user models 
-        return await model.findByIdAndUpdate(id, body, {new: true, runValidators: true, useFindAndModify: true})
+    // async update(model, id, body) {
+    //     // this method does not apply pre/post hooks hence use findAndUpdate 
+    //     // for user models 
+    //     return await model.findByIdAndUpdate(id, body, {new: true, runValidators: true, useFindAndModify: true})
+    // },
+    async update(model, body, updateKeys) {
+        updateKeys.forEach((update) => model[update] = body[update])
+        return await model.save();
     }, 
     async findAndUpdate(model, id, body, updateKeys) {
         const foundModel = await model.findById(id);

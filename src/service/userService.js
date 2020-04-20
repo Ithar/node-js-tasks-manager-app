@@ -88,13 +88,14 @@ const userService = {
             })
     },
     deleteUser(req, res) {
-        const id = req.params.id
+        const id = req.user.id
         console.log(chalk.blue('Deleting user by id' + id));
 
-        dbService.delete(User, id, {})
+        dbService.delete(user)
             .then((user) => {
 
                 if (user) {
+                    authService.expireAuthToken(req)
                     res.send({
                         success: true,
                         msg: 'User with id ' + user.id + ' was deleted successfully.'
@@ -113,8 +114,8 @@ const userService = {
                 })
             })
     },
-    updateUser(req, res) {
-        const id = req.params.id
+    updateUser(res, user) {
+        const id = user.id
         const body = req.body
 
         console.log(chalk.blue('Updateing user with id' + id))
@@ -128,7 +129,7 @@ const userService = {
             })
         }
 
-        dbService.findAndUpdate(User, id, body, updateKeys)
+        dbService.update(user, body, updateKeys)
             .then(user => {
 
                 if (user === undefined) {
