@@ -4,6 +4,10 @@ const validator = require('validator')
 const passwordValidator = require('password-validator')
 const bcrypt = require('bcryptjs')
 
+const userSchemaoptions = {
+    timestamps : true
+}
+
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -36,7 +40,7 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     }
-})
+}, userSchemaoptions)
 
 // PRE/POST Hooks
 userSchema.pre('save', async function(next) {
@@ -60,6 +64,8 @@ userSchema.methods.toJSON = function () {
     delete userJson.__v
     delete userJson.password
     delete userJson.failedLoginCount
+    delete userJson.createdAt
+    delete userJson.updatedAt
     
     return userJson
 }
