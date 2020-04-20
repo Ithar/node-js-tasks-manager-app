@@ -39,12 +39,17 @@ const userSchema = new mongoose.Schema({
 })
 
 // INSTANCE methods 
-userSchema.methods.printUser = async () => {
+userSchema.methods.toJSON = function () {
     const user = this
-    console.log('-----------');
-    console.log('username:' + user.username);
-    console.log('email:' + user.email);
-    console.log('-----------');
+
+    const userJson = user.toObject() 
+
+    delete userJson._id
+    delete userJson.__v
+    delete userJson.password
+    delete userJson.failedLoginCount
+    
+    return userJson
 }
 
 // STATIC methods 

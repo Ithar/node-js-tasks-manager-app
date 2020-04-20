@@ -68,8 +68,7 @@ const userService = {
                 const token = await authService.generateToken(user)
 
                 res.status(201).send({
-                    name: user.username,
-                    email: user.email,
+                    user: user,
                     token: token
                 })
             }).catch((err) => {
@@ -164,8 +163,7 @@ const userService = {
             const token = await authService.generateToken(user)
 
             res.send({
-                name: user.username,
-                email: user.email,
+                user: user,
                 token: token
             })
         } catch (e) {
