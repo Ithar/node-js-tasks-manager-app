@@ -28,7 +28,8 @@ taskSchema.methods.toJSON = function () {
     const task = this
 
     const taskJson = task.toObject()
-
+    taskJson.id = taskJson._id
+    
     delete taskJson._id
     delete taskJson.__v
     delete taskJson.userId

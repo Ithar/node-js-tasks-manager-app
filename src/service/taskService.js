@@ -22,29 +22,23 @@ const taskService = {
             })
         }
     },
-    findTask(req, res) {
-        const id = req.params.id
-        console.log(chalk.blue('Find task by id:' + id))
-        dbService.findById(Task, id)
-            .then((task) => {
+    async findTask(req, res) {
+        const taskId = req.params.id
+        console.log(chalk.blue('Find task by id:' + taskId))
 
-                if (!task) {
-                    return res.status(404).send({
-                        success: false,
-                        message: 'Task not found by id:' + id
-                    })
-                }
+        const user = req.user
 
-                res.send(task)
-
+        try {
+            await user.populate('myTasks').execPopulate()
+            const task = user.myTasks.filter((task) => task.id === taskId )
+            res.send(task)
+        } catch(err) {
+            console.log(chalk.red('Failed to find task by id due to: ' + err))
+            res.status(500).send({
+                success: false,
+                error: 'Unbale to task find by id at present'
             })
-            .catch((err) => {
-                console.log(chalk.red('Failed to find task by id due to: ' + err))
-                res.status(500).send({
-                    success: false,
-                    error: 'Unbale to task find by id at present'
-                })
-            })
+        }
     },
     async saveTasks(req, res) {
         console.log(chalk.blue('Creating a task'))

@@ -85,14 +85,12 @@ userSchema.statics.findByCredentials = async (email, pwd) => {
     return user
 }
 
-
-// 
+// Virtual References 
 userSchema.virtual('myTasks', {
     ref: 'Task',
     localField : '_id',
     foreignField: 'userId'
 })
-
 
 const User = mongoose.model('User', userSchema)
 
