@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const taskSchemaoptions = {
+const taskSchemaOptions = {
     timestamps : true
 }
 
@@ -25,7 +25,7 @@ const taskSchema = new mongoose.Schema({
         required: true, 
         ref: 'User'
     }
-}, taskSchemaoptions)
+}, taskSchemaOptions)
 
 // Instance methods 
 taskSchema.methods.toJSON = function () {

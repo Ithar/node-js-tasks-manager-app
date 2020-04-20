@@ -4,7 +4,7 @@ const validator = require('validator')
 const passwordValidator = require('password-validator')
 const bcrypt = require('bcryptjs')
 
-const userSchemaoptions = {
+const userSchemaOptions = {
     timestamps : true
 }
 
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     }
-}, userSchemaoptions)
+}, userSchemaOptions)
 
 // PRE/POST Hooks
 userSchema.pre('save', async function(next) {
