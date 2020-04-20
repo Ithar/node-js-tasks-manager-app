@@ -10,17 +10,32 @@ const taskService = {
         console.log(chalk.blue('Listing tasks ... '))
 
         const user = req.user
+        const match = await taskService.getQueryPrams(req)
 
         try {
-            await user.populate('myTasks').execPopulate()
+            await user.populate({
+                path: 'myTasks',
+                match
+            }).execPopulate()
+
             res.send(user.myTasks)
-        } catch(err) {
+        } catch (err) {
             console.log(chalk.red('Failed to list tasks due to: ' + err))
             res.status(500).send({
                 success: false,
                 error: 'Unbale to list tasks at present'
             })
         }
+    },
+    async getQueryPrams(req) {
+
+        const match = {}
+
+        if (req.query.completed) {
+            match.completed = (req.query.completed === 'true') ? true : false;
+        }
+
+        return match
     },
     async findTask(req, res) {
         const taskId = req.params.id
@@ -30,9 +45,9 @@ const taskService = {
 
         try {
             await user.populate('myTasks').execPopulate()
-            const task = user.myTasks.filter((task) => task.id === taskId )
+            const task = user.myTasks.filter((task) => task.id === taskId)
             res.send(task)
-        } catch(err) {
+        } catch (err) {
             console.log(chalk.red('Failed to find task by id due to: ' + err))
             res.status(500).send({
                 success: false,
@@ -44,12 +59,12 @@ const taskService = {
         console.log(chalk.blue('Creating a task'))
 
         const task = new Task(req.body);
-        task.userId = req.user._id 
+        task.userId = req.user._id
 
         try {
             const savedTask = await dbService.save(task);
             res.status(201).send(savedTask)
-        } catch(err) {
+        } catch (err) {
 
             if (err.errors !== undefined) {
                 return res.status(400).send({
@@ -63,7 +78,7 @@ const taskService = {
                 success: false,
                 error: 'Failed to save task'
             })
-        }        
+        }
     },
     async deleteTask(req, res) {
         const taskId = req.params.id
@@ -72,10 +87,10 @@ const taskService = {
 
         try {
 
-            const task = await dbService.findOne(Task, {_id : taskId, userId : user._id})
+            const task = await dbService.findOne(Task, { _id: taskId, userId: user._id })
 
-            if (task) {                
-                const dto = await dbService.deleteAndCount(Task, task._id, {userId : user._id})
+            if (task) {
+                const dto = await dbService.deleteAndCount(Task, task._id, { userId: user._id })
                 const count = dto.count
 
                 res.send({
@@ -95,17 +110,17 @@ const taskService = {
                 success: false,
                 error: 'An error occured trying to delete a task'
             })
-        }            
+        }
     },
     deleteTasksByUser(user) {
 
         console.log(chalk.blue('Deleting all tasks for user: ' + user._id))
         try {
-            dbService.deleteAll(Task, {userId : user._id})
-        } catch(e) {
+            dbService.deleteAll(Task, { userId: user._id })
+        } catch (e) {
             console.log(chalk.red('Failed to deleting all tasks due to ' + e))
         }
-        
+
     },
     async updateTask(req, res) {
         const taskId = req.params.id
@@ -113,7 +128,7 @@ const taskService = {
         const user = req.user
 
         console.log(chalk.blue('Updateing task with id' + taskId))
-        
+
         const updateFields = Object.keys(body);
 
         if (!taskService.isValidUpdate(updateFields)) {
@@ -123,9 +138,9 @@ const taskService = {
             })
         }
 
-        try  {
-            const task = await dbService.findOne(Task, {_id : taskId, userId : user._id})
-        
+        try {
+            const task = await dbService.findOne(Task, { _id: taskId, userId: user._id })
+
             if (!task) {
                 return res.status(404).send({
                     success: false,
@@ -136,7 +151,7 @@ const taskService = {
             const updatedTask = await dbService.update(task, body, updateFields)
             res.send(updatedTask)
 
-        } catch(e) {
+        } catch (e) {
             console.log(chalk.red('Delete failed due to ' + e))
             res.status(500).send({
                 success: false,
