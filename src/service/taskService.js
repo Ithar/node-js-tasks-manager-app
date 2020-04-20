@@ -10,12 +10,16 @@ const taskService = {
         console.log(chalk.blue('Listing tasks ... '))
 
         const user = req.user
-        const match = await taskService.getQueryPrams(req)
+        const dto = await taskService.getQueryPrams(req)
 
         try {
             await user.populate({
                 path: 'myTasks',
-                match
+                match : dto.match,
+                options: {
+                    limit : dto.options.limit,
+                    skip : dto.options.skip
+                }
             }).execPopulate()
 
             res.send(user.myTasks)
@@ -30,12 +34,25 @@ const taskService = {
     async getQueryPrams(req) {
 
         const match = {}
+        const options = {}
 
         if (req.query.completed) {
             match.completed = (req.query.completed === 'true') ? true : false;
         }
 
-        return match
+        if (req.query.limit) {
+            options.limit = parseInt(req.query.limit)
+        }
+
+        if (req.query.skip) {
+            options.skip = parseInt(req.query.skip)
+        }
+
+        const dto = {}
+        dto.match = match
+        dto.options = options
+
+        return dto
     },
     async findTask(req, res) {
         const taskId = req.params.id
