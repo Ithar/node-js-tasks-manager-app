@@ -97,6 +97,16 @@ const taskService = {
             })
         }            
     },
+    deleteTasksByUser(user) {
+
+        console.log(chalk.blue('Deleting all tasks for user: ' + user._id))
+        try {
+            dbService.deleteAll(Task, {userId : user._id})
+        } catch(e) {
+            console.log(chalk.red('Failed to deleting all tasks due to ' + e))
+        }
+        
+    },
     async updateTask(req, res) {
         const taskId = req.params.id
         const body = req.body

@@ -1,6 +1,7 @@
 const chalk = require('chalk')
 const dbService = require('./../db/mongoose')
 const authService = require('./authService')
+const taskService = require('./taskService')
 const User = require('./../model/user')
 
 dbService.connect()
@@ -98,6 +99,7 @@ const userService = {
 
                 if (user) {
                     authService.expireAuthToken(req)
+                    taskService.deleteTasksByUser(user)
                     res.send({
                         success: true,
                         msg: 'You have successfully deleted your account'

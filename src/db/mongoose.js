@@ -19,7 +19,6 @@ const dbService = {
                 useUnifiedTopology: true,
                 useFindAndModify : false
             })
-
         }
 
         connected = true;
@@ -38,6 +37,9 @@ const dbService = {
     }, 
     async deleteById (model, id) {
         return await model.findByIdAndDelete(id, {})
+    },
+    async deleteAll(Model, filter) {
+        Model.deleteMany(filter)
     },
     async delete (model, id) {
         return await model.deleteOne({_id: id})
