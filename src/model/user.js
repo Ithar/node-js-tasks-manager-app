@@ -87,7 +87,7 @@ userSchema.statics.findByCredentials = async (email, pwd) => {
 
 
 // 
-userSchema.virtual('tasks', {
+userSchema.virtual('myTasks', {
     ref: 'Task',
     localField : '_id',
     foreignField: 'userId'

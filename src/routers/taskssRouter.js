@@ -8,7 +8,7 @@ const auth = require('./../routers/middleware/auth')
 
 // Get Tasks 
 router.get('/tasks', auth, (req, res) => {
-    taskService.listTasks(res)    
+    taskService.listTasks(req, res)    
 })
 
 // Create Task

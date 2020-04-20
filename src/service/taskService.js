@@ -6,20 +6,21 @@ dbService.connect()
 
 const taskService = {
 
-    listTasks(res) {
+    async listTasks(req, res) {
         console.log(chalk.blue('Listing tasks ... '))
 
-        dbService.findAll(Task, res)
-            .then((task) => {
-                res.send(task)
+        const user = req.user
+
+        try {
+            await user.populate('myTasks').execPopulate()
+            res.send(user.myTasks)
+        } catch(err) {
+            console.log(chalk.red('Failed to list tasks due to: ' + err))
+            res.status(500).send({
+                success: false,
+                error: 'Unbale to list tasks at present'
             })
-            .catch((err) => {
-                console.log(chalk.red('Failed to list tasks due to: ' + err))
-                res.status(500).send({
-                    success: false,
-                    error: 'Unbale to list tasks at present'
-                })
-            })
+        }
     },
     findTask(req, res) {
         const id = req.params.id
