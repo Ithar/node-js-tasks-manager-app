@@ -66,11 +66,11 @@ const userService = {
             .then(async (user) => {
 
                 const token = await authService.generateToken(user)
-                
+
                 res.status(201).send({
                     name: user.username,
-                    email : user.email,
-                    token : token
+                    email: user.email,
+                    token: token
                 })
             }).catch((err) => {
 
@@ -125,7 +125,7 @@ const userService = {
         if (!this.isValidUpdate(updateKeys)) {
             res.status(400).send({
                 success: false,
-                msg : 'Invalid updates fields'
+                msg: 'Invalid updates fields'
             })
         }
 
@@ -151,30 +151,48 @@ const userService = {
     isValidUpdate(updateKeys) {
         const allowedKeys = ['username', 'email', 'password']
         return updateKeys.every((update) => allowedKeys.includes(update))
-    }, 
+    },
     async loginUser(req, res) {
 
         const email = req.body.email
-        const  password = req.body.password
+        const password = req.body.password
 
         console.log(chalk.blue('Attempting to login user with email: ' + email))
 
         try {
             const user = await User.findByCredentials(email, password)
             const token = await authService.generateToken(user)
-            
+
             res.send({
-                name : user.username,
-                email : user.email,
-                token : token
+                name: user.username,
+                email: user.email,
+                token: token
             })
-        } catch(e) {
+        } catch (e) {
             res.status(400).send({
                 success: false,
                 error: e.message
             })
         }
-        
+    },
+    async logoutUser(req, res) {
+
+        const success = await authService.expireAuthToken(req)
+
+        console.log(chalk.blue('User logout success : ' + success))
+
+        if (success) {
+            res.send({
+                success: true,
+                msg: 'User successfully logout'
+            })
+        } else {
+            res.status(400).send({
+                success: false,
+                msg: 'Unable to logout at present'
+            })
+        }
+
     }
 }
 

@@ -13,15 +13,15 @@ const authService = {
         return '1 hour'
     },
     async generateToken(user) {
-        const id = user._id.toString()
-        const token = await jwt.sign({_id: id}, authService.getSecrect(), {expiresIn: authService.getExpiresTime()}) 
-        authService.saveAuthToken(id, token)
+        const userId = user._id.toString()
+        const token = await jwt.sign({_id: userId}, authService.getSecrect(), {expiresIn: authService.getExpiresTime()}) 
+        authService.saveAuthToken(userId, token)
         return token
     },
     async getAuthenticatedUser(req) {
 
-        const token = req.header('Authorization').replace('Bearer ', '')
         try {
+            const token = req.header('Authorization').replace('Bearer ', '')
             const decoded = jwt.verify(token, authService.getSecrect())
             const userId = decoded._id; 
             const userAuth = await AuthToken.findOne({userId})
@@ -47,7 +47,22 @@ const authService = {
         }).catch( (e) =>{
             console.log(chalk.red('Failed to save user auth token for user id ' + userId))
         })
+    },
+    async expireAuthToken(req) {
+
+        try {
+            const token = req.header('Authorization').replace('Bearer ', '')
+            const decoded = jwt.verify(token, authService.getSecrect())
+            const userId = decoded._id; 
+            await AuthToken.deleteOne({userId}) 
+            return true    
+        } catch(e) {
+            console.log(chalk.yellow('Authentication expiring failed due to : ' + e))
+            return false
+        }
+        
     }
+
 
 }
 

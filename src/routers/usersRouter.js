@@ -44,4 +44,9 @@ router.post('/user/login', (req, res) => {
     userService.loginUser(req, res);
 })
 
+// Logout User
+router.put('/user/logout', (req, res) => {
+    userService.logoutUser(req, res);
+})
+
 module.exports = router
