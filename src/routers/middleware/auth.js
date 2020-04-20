@@ -13,7 +13,6 @@ const auth = async (req, res, next) => {
         }
 
         req.user = user
-        console.log(chalk.blue('User successfully authenticated [id= ' + user._id + ', name= ' + user.username + ']'))
         next()
     } catch (e) {
 
