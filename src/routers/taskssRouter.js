@@ -1,22 +1,35 @@
 const express = require('express')
-const taskService = require('../service/taskService')
 const router = new express.Router()
 
+const taskService = require('../service/taskService')
+const auth = require('./../routers/middleware/auth')
+
 // Tasks
-router.get('/tasks', (req, res) => {
+
+// Get Tasks 
+router.get('/tasks', auth, (req, res) => {
     taskService.listTasks(res)    
 })
-router.post('/task', (req, res) => {
-    taskService.saveTasks(req, res)    
-})
-router.get('/task/:id', (req, res) => {
+
+// Create Task
+router.get('/task/:id', auth, (req, res) => {
     taskService.findTask(req, res);
 })
-router.delete('/task/:id', (req, res) => {
-    taskService.deleteTask(req, res);
+
+// Create Task
+router.post('/task', auth, (req, res) => {
+    taskService.saveTasks(req, res)    
 })
-router.patch('/task/:id', (req, res) => {
+
+// Update Task
+router.patch('/task/:id', auth, (req, res) => {
     taskService.updateTask(req, res);
 })
+
+// Delete Task
+router.delete('/task/:id', auth, (req, res) => {
+    taskService.deleteTask(req, res);
+})
+
 
 module.exports = router

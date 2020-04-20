@@ -45,27 +45,30 @@ const taskService = {
                 })
             })
     },
-    saveTasks(req, res) {
+    async saveTasks(req, res) {
+        console.log(chalk.blue('Creating a task'))
+
         const task = new Task(req.body);
-        console.log(chalk.blue('Create a task'))
-        dbService.save(task, res)
-            .then((task) => {
-                res.status(201).send(task)
-            }).catch((err) => {
+        task.userId = req.user._id 
 
-                if (err.errors !== undefined) {
-                    return res.status(400).send({
-                        success: false,
-                        message: 'Failed to create task.',
-                        error: err.errors
-                    })
-                }
+        try {
+            const savedTask = await dbService.save(task);
+            res.status(201).send(savedTask)
+        } catch(err) {
 
-                res.status(500).send({
+            if (err.errors !== undefined) {
+                return res.status(400).send({
                     success: false,
-                    error: 'Failed to save task'
+                    message: 'Failed to create task.',
+                    error: err.errors
                 })
+            }
+
+            res.status(500).send({
+                success: false,
+                error: 'Failed to save task'
             })
+        }        
     },
     deleteTask(req, res) {
         const id = req.params.id
