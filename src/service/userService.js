@@ -148,9 +148,9 @@ const userService = {
                 })
             })
     },
-    isValidUpdate(updateKeys) {
-        const allowedKeys = ['username', 'email', 'password']
-        return updateKeys.every((update) => allowedKeys.includes(update))
+    isValidUpdate(updatedFields) {
+        const allowedFields = ['username', 'email', 'password']
+        return updatedFields.every((field) => allowedFields.includes(field))
     },
     async loginUser(req, res) {
 
