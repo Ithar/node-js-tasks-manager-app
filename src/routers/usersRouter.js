@@ -70,7 +70,7 @@ router.get('/user/:id/avatar', auth, async (req, res) => {
 
     try {
         const user = await req.user
-        res.set('Content-Type', 'image/jpg')
+        res.set('Content-Type', 'image/png')
         res.send(user.avatar)
     } catch (e) {
         console.log(chalk.red('Could not find avatar for user ' + req.params.id))

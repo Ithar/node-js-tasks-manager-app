@@ -1,8 +1,10 @@
 const chalk = require('chalk')
+const sharp = require('sharp')
 const dbService = require('./../db/mongoose')
 const authService = require('./authService')
 const taskService = require('./taskService')
 const User = require('./../model/user')
+
 
 dbService.connect()
 
@@ -148,7 +150,7 @@ const userService = {
     },
     async saveAvatar(req, res) {
         const user = req.user
-        const image =  req.file.buffer
+        const image =  await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer() 
 
         user.avatar = image
 
