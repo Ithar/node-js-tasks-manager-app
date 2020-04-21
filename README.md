@@ -6,6 +6,7 @@ Tasks taking app with MongoDB.
 - Uses `moongoose` framework for entity modeling & validation
 - Uses pre save hooks to hash passwords using `bcryptjs`
 - Uses JWT token for authentication 
+- Pagination/Sorting  
 
 #### Docs
 http://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html

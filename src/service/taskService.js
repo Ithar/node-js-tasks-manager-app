@@ -11,14 +11,15 @@ const taskService = {
 
         const user = req.user
         const dto = await taskService.getQueryPrams(req)
-
+        const sort = dto.sort
         try {
             await user.populate({
                 path: 'myTasks',
                 match : dto.match,
                 options: {
                     limit : dto.options.limit,
-                    skip : dto.options.skip
+                    skip : dto.options.skip,
+                    sort
                 }
             }).execPopulate()
 
@@ -35,11 +36,14 @@ const taskService = {
 
         const match = {}
         const options = {}
+        const sort = {}
 
+        // Completed
         if (req.query.completed) {
             match.completed = (req.query.completed === 'true') ? true : false;
         }
 
+        // Pagination
         if (req.query.limit) {
             options.limit = parseInt(req.query.limit)
         }
@@ -48,9 +52,15 @@ const taskService = {
             options.skip = parseInt(req.query.skip)
         }
 
+        // Sorting        
+        if (req.query.sortBy) {
+            sort[req.query.sortBy] = (req.query.order === 'desc' ? -1 : 1)
+        }
+    
         const dto = {}
         dto.match = match
         dto.options = options
+        dto.sort = sort
 
         return dto
     },
