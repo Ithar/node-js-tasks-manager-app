@@ -3,8 +3,9 @@ const sharp = require('sharp')
 const dbService = require('./../db/mongoose')
 const authService = require('./authService')
 const taskService = require('./taskService')
-const User = require('./../model/user')
+const emailService = require('./emailService')
 
+const User = require('./../model/user')
 
 dbService.connect()
 
@@ -30,7 +31,6 @@ const userService = {
                 error: 'Failed to list users'
             })
         }
-
     },
     findUser(req, res) {
 
@@ -58,37 +58,35 @@ const userService = {
             })
 
     },
-    saveUser(req, res) {
+    async createUser(req, res) {
 
         console.log(chalk.blue('Creating user'))
 
         const user = new User(req.body)
         // TODO [IM 14-04-20] - check email before save
 
-        dbService.save(user)
-            .then(async (user) => {
-
-                const token = await authService.generateToken(user)
-
-                res.status(201).send({
-                    user: user,
-                    token: token
-                })
-            }).catch((err) => {
-
-                if (err.errors !== undefined) {
-                    return res.status(400).send({
-                        success: false,
-                        message: 'Failed to create a user.',
-                        error: err.errors
-                    })
-                }
-
-                res.status(500).send({
-                    success: false,
-                    error: 'Failed to save user'
-                })
+        try {
+            const createdUser = await dbService.save(user)
+            const token = await authService.generateToken(createdUser)
+            emailService.sendWelcomeEmail(createdUser)
+            res.status(201).send({
+                user: createdUser,
+                token: token
             })
+        } catch(e) {
+            if (err.errors !== undefined) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'Failed to create a user.',
+                    error: err.errors
+                })
+            }
+
+            res.status(500).send({
+                success: false,
+                error: 'Failed to save user'
+            })
+        }
     },
     deleteUser(req, res) {
         const user = req.user

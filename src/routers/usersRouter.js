@@ -18,7 +18,7 @@ router.get('/users', (req, res) => {
 
 // Create User
 router.post('/user', (req, res) => {
-    userService.saveUser(req, res);
+    userService.createUser(req, res);
 })
 
 // Login User
