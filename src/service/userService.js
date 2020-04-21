@@ -123,7 +123,6 @@ const userService = {
         const body = req.body
         const id = user.id
 
-
         console.log(chalk.blue('Updateing user with id' + id))
 
         const updateFields = Object.keys(body);
@@ -147,8 +146,28 @@ const userService = {
             })
         }
     },
+    async saveAvatar(req, res) {
+        const user = req.user
+        const image =  req.file.buffer
+
+        user.avatar = image
+
+        try {
+            await dbService.save(user)
+            res.send({
+                success: true,
+                msg : 'Avatar saved to user'
+            })
+        } catch(e) {
+            console.log(chalk.red('Cannot save avatar due to ' + e))
+            res.status(500).send({
+                success: false,
+                error: 'Cannot upload avatar, please try later '
+            })
+        }
+    },
     isValidUpdate(updatedFields) {
-        const allowedFields = ['username', 'email', 'password']
+        const allowedFields = ['username', 'email', 'password', 'avatar']
         return updatedFields.every((field) => allowedFields.includes(field))
     },
     async loginUser(req, res) {

@@ -39,6 +39,9 @@ const userSchema = new mongoose.Schema({
     failedLoginCount: { 
         type: Number,
         default: 0
+    },
+    avatar : {
+        type: Buffer
     }
 }, userSchemaOptions)
 
@@ -66,7 +69,8 @@ userSchema.methods.toJSON = function () {
     delete userJson.failedLoginCount
     delete userJson.createdAt
     delete userJson.updatedAt
-    
+    userJson.avatar = '/user/' + user._id + '/avatar'
+
     return userJson
 }
 

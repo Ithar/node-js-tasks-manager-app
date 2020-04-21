@@ -1,8 +1,10 @@
+const chalk = require('chalk')
 const express = require('express')
 const router = new express.Router()
 
 const userService = require('./../service/userService')
 const auth = require('./../routers/middleware/auth')
+const upload = require('./../routers/middleware/upload')
 
 //////////
 // Users 
@@ -49,6 +51,32 @@ router.delete('/user', auth, (req, res) => {
 // Update User
 router.patch('/user', auth, (req, res) => {
     userService.updateUser(req, res);
+})
+
+// File Upload User
+router.post('/user/me/avatar', auth, upload.single('myFile'), (req, res) => {
+
+    userService.saveAvatar(req, res)
+    
+},(error, req, res, next) => {
+    res.status(400).send({
+        success: false,
+        error
+    })
+})
+
+// File Get 
+router.get('/user/:id/avatar', auth, async (req, res) => {
+
+    try {
+        const user = await req.user
+        res.set('Content-Type', 'image/jpg')
+        res.send(user.avatar)
+    } catch (e) {
+        console.log(chalk.red('Could not find avatar for user ' + req.params.id))
+        res.status(404).send()
+    }
+   
 })
 
 module.exports = router
