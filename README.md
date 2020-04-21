@@ -7,6 +7,7 @@ Tasks taking app with MongoDB.
 - Uses pre save hooks to hash passwords using `bcryptjs`
 - Uses JWT token for authentication 
 - Pagination/Sorting  
+- File upload
 
 #### Docs
 http://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html
