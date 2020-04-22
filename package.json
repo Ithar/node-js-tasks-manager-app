@@ -4,7 +4,7 @@
   "description": "Tasks manager app with MongoDB.",
   "main": "app.js",
   "scripts": {
-    "start": "src/app.js",
+    "start": "node src/app.js",
     "dev": "env-cmd -f ./config/dev.env --silent nodemon src/app.js"
   },
   "repository": {

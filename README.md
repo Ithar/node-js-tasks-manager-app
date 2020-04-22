@@ -85,6 +85,6 @@ https://git.heroku.com/node-js-task-manager-app-v1-0.git
 
 > heroku config:set MONGODB_URL="mongodb+srv://taskmanageradmin:ciNHBEdazQ4hw@cluster0-lkosj.mongodb.net/task-manager?retryWrites=true"
 
-git push heroku master
+> git push heroku master
 
 ## Further enhancements 
