@@ -2,7 +2,9 @@
 Tasks taking app with MongoDB.
 
 #### Features 
-- Uses `mongodb` as the backend database
+- Heroku hostest API 
+- Uses MongoDB compass for DB client
+- Uses aws hosted `mongodb` as the backend database hosted via Atlas
 - Uses `moongoose` framework for entity modeling & validation
 - Uses pre save hooks to hash passwords using `bcryptjs`
 - Uses JWT token for authentication 
@@ -66,9 +68,22 @@ npm run dev
 
 http://localhost:3000 
 
-## Application GIT
 
-heroku create node-js-tasks-app-v01
+[[ Heroku ]]
+
+https://node-js-task-manager-app-v1-0.herokuapp.com
+
+https://git.heroku.com/node-js-task-manager-app-v1-0.git
+
+## Application Heroku
+
+> heroku create node-js-task-manager-app-v1.0
+
+> heroku config:set JWT_SECRET=2TgHgZZkwBU
+
+> heroku config:set SENDGIRD_API_KEY=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
+
+> heroku config:set MONGODB_URL="mongodb+srv://taskmanageradmin:ciNHBEdazQ4hw@cluster0-lkosj.mongodb.net/task-manager?retryWrites=true"
 
 git push heroku master
 
