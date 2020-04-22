@@ -12,6 +12,7 @@ Tasks taking app with MongoDB.
 - File upload + Convert via Sharp
 - Send emails via SendGrid
 - External environment variables 
+- Jest as testing framework  
 
 #### Docs
 http://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html
