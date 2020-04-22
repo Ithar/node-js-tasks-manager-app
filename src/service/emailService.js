@@ -15,7 +15,7 @@ const emailService = {
         return 'acmilano18@hotmail.com'
     },
     getAPIKey() {
-        return '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'
+        return process.env.SENDGIRD_API_KEY || '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'
     },
     sendWelcomeEmail(user) {
 

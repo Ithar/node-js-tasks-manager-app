@@ -1,3 +1,7 @@
+# Project
+./src/config/*
+/src/config/*
+
 # Logs
 logs
 *.log
@@ -118,3 +122,4 @@ dist
 *.ipr
 *.ids
 *.orig
+/src/config/dev.env

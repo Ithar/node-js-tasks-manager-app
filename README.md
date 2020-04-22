@@ -8,6 +8,8 @@ Tasks taking app with MongoDB.
 - Uses JWT token for authentication 
 - Pagination/Sorting  
 - File upload + Convert via Sharp
+- Send emails via SendGrid
+- External environment variables 
 
 #### Docs
 http://mongodb.github.io/node-mongodb-native/3.5/api/Collection.html
@@ -43,6 +45,12 @@ Stack  | version |
 > npm install nodemon
 
 > npm install jsonwebtoken
+
+> npm intsall sharp
+
+> npm install @sendgrid/mail
+
+> npm i env-cmd --save-dev
 
 ## Application Run
 
