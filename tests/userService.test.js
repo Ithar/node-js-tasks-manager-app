@@ -79,19 +79,26 @@ test('User: Should not login user with invalid password', async () => {
 })
 
 // Profile 
-test('User: Should NOT get user profile', async (done) => {
+test('User: Should NOT get user profile', async () => {
     await request(app).get('/user/me')
         .set('Authorization', `Bearer invalid.jwt.eyJhbGciOiJIUzI1NiIsInR5cC`)
         .send()
-        .expect(401)
-        done()
+        .expect(401)  
 })
 
 test('User: Should get user profile', async () => {
-    await request(app).get('/user/me')
+    const response = await request(app).get('/user/me')
         .set('Authorization', `Bearer ${testUser1.token}`)
         .send()
         .expect(200)
+
+        // expect(response.body).toMatchObject({
+        //     user: {
+        //         username : testUser1.username,
+        //         email: testUser1.email
+        //     },
+        //     token : testUser1.token
+        // })    
 })
 
 // List 
@@ -101,15 +108,20 @@ test('User: Should list all users', async () => {
     .expect(200)
 })
 
-
 // Create
 test('User: Should create new user', async () =>{
-    await request(app).post('/user')
+
+    const testEmail =  "jane.doe@test.com"
+
+    const response = await request(app).post('/user')
     .send({
         "username" : "Jane Doe",
-        "email": "jane.doe@test.com",
+        "email": testEmail,
         "password" : "Test#123"
     }).expect(201)
+
+    expect(response.body.user.email).toBe(testEmail)
+    expect(response.body.token).not.toBeNull()
 })
 
 // Delete 
@@ -124,6 +136,9 @@ test('User: Should delete user', async () => {
     .set('Authorization', `Bearer ${testUser2.token}`)
     .send()
     .expect(200)
+
+    const user = await User.findById(testUser2._id)
+    expect(user).toBeNull()
 })
 
 
