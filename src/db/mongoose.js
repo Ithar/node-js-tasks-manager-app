@@ -10,9 +10,6 @@ const dbService = {
     connect() {
 
         if (!connected) {
-
-            console.log(chalk.blue('Connecting to DB'))
-
             mongoose.connect(this.url(), {
                 useNewUrlParser: true,
                 useCreateIndex: true,

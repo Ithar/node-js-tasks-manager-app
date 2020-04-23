@@ -51,7 +51,7 @@ userSchema.pre('save', async function(next) {
 
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8);
-        console.log(chalk.blue('Password has been hashed'))
+        console.info(chalk.blue('Password has been hashed'))
     }   
     
     next() // informs the hook is completed it's work
@@ -79,18 +79,18 @@ userSchema.statics.findByCredentials = async (email, pwd) => {
     const user = await User.findOne({email})
 
     if (!user) {
-        console.log(chalk.yellow('No user found with email' + email))
-        throw new Error('Unable to login')
+        console.warn(chalk.yellow('No user found with email:' + email))
+        throw new Error('Unable to login, user not found')
     }
     
     const isMatch = await bcrypt.compare(pwd, user.password)
 
     if (!isMatch) {
         console.log(chalk.yellow('User found but password mismatch ' + pwd))
-        throw new Error('Unable to login.')
+        throw new Error('Unable to login password mismatch.')
     }
 
-    console.log(chalk.blue('User login passed for email: ' + email))
+    console.info(chalk.blue('User login passed for email: ' + email))
 
     return user
 }

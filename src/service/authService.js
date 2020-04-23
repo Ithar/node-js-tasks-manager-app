@@ -14,8 +14,11 @@ const authService = {
     },
     async generateToken(user) {
         const userId = user._id.toString()
-        const token = await jwt.sign({ _id: userId }, authService.getSecrect(), { expiresIn: authService.getExpiresTime() })
-        authService.saveAuthToken(userId, token)
+        return await jwt.sign({ _id: userId }, authService.getSecrect(), { expiresIn: authService.getExpiresTime() })
+    },
+    async generateAndSaveToken(user) {
+        const token = await authService.generateToken(user)
+        authService.saveAuthToken(user, token)
         return token
     },
     async getAuthenticatedUser(req) {
@@ -27,12 +30,14 @@ const authService = {
             const userAuth = await AuthToken.findOne({ userId })
             return await User.findOne({ _id: userAuth.userId })
         } catch (e) {
-            console.log(chalk.yellow('Authentication failed due to : ' + e))
+            console.warn(chalk.yellow('Authentication failed due to : ' + e))
             return undefined
         }
 
     },
-    saveAuthToken(userId, token) {
+    saveAuthToken(user, token) {
+
+        const userId = user._id.toString()
 
         AuthToken.findOne({ userId: userId })
             .then((authToken) => {
@@ -40,7 +45,6 @@ const authService = {
                 if (!authToken) {
                     authToken = new AuthToken()
                     authToken.userId = userId
-                    console.log(chalk.blue('User authenticated [id= ' + userId + ']'))
                 }
 
                 authToken.token = token

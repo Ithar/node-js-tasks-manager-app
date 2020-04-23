@@ -8,7 +8,7 @@ const auth = async (req, res, next) => {
         const user = await authService.getAuthenticatedUser(req)
 
         if (!user) {
-            console.log(chalk.yellow('User is not authenticated'))
+            console.warn(chalk.yellow('User is not authenticated'))
             throw new Error()
         }
 

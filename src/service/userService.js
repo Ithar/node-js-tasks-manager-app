@@ -60,25 +60,25 @@ const userService = {
     },
     async createUser(req, res) {
 
-        console.log(chalk.blue('Creating user'))
+        console.info(chalk.blue('Creating a new user'))
 
         const user = new User(req.body)
         // TODO [IM 14-04-20] - check email before save
 
         try {
             const createdUser = await dbService.save(user)
-            const token = await authService.generateToken(createdUser)
+            const token = await authService.generateAndSaveToken(createdUser)
             emailService.sendWelcomeEmail(createdUser)
             res.status(201).send({
                 user: createdUser,
                 token: token
             })
         } catch(e) {
-            if (err.errors !== undefined) {
+            if (e.errors !== undefined) {
                 return res.status(400).send({
                     success: false,
                     message: 'Failed to create a user.',
-                    error: err.errors
+                    error: e.errors
                 })
             }
 
@@ -175,17 +175,18 @@ const userService = {
         const email = req.body.email
         const password = req.body.password
 
-        console.log(chalk.blue('Attempting to login user with email: ' + email))
+        console.info(chalk.blue('Attempting to login user with email: ' + email))
 
         try {
             const user = await User.findByCredentials(email, password)
-            const token = await authService.generateToken(user)
+            const token = await authService.generateAndSaveToken(user)
 
             res.send({
                 user: user,
                 token: token
             })
         } catch (e) {
+            console.error(chalk.red('Failed to login user due to: ' + e))
             res.status(400).send({
                 success: false,
                 error: e.message

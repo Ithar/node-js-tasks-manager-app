@@ -32,7 +32,7 @@ const emailService = {
                 text: body
             })
 
-            console.log(chalk.blue('Registration email sent to: ' + to))
+            console.info(chalk.blue('Registration email sent to: ' + to))
 
         } catch(e) {
             console.log(chalk.red('Failed to send email due to ' + e))
