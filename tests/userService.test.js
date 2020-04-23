@@ -31,13 +31,20 @@ beforeEach(async () => {
     const savedUser2 = await new User(testUser2).save()
 
     const token = await authService.generateToken(savedUser1)
+    const token2 = await authService.generateToken(savedUser2)
 
     await new AuthToken({
         userId : savedUser1._id,
         token: token
     }).save()
 
+    await new AuthToken({
+        userId : savedUser2._id,
+        token: token2
+    }).save()
+
     testUser1.token = token
+    testUser2.token = token2
 })
 
 afterAll(done => {
@@ -105,5 +112,18 @@ test('User: Should create new user', async () =>{
     }).expect(201)
 })
 
+// Delete 
+test('User: Should NOT delete user', async () => {
+    await request(app).delete('/user')
+    .send()
+    .expect(401)
+})
+
+test('User: Should delete user', async () => {
+    await request(app).delete('/user')
+    .set('Authorization', `Bearer ${testUser2.token}`)
+    .send()
+    .expect(200)
+})
 
 

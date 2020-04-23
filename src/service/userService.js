@@ -92,7 +92,7 @@ const userService = {
         const user = req.user
         const id = user._id
 
-        console.log(chalk.blue('Deleting user by id' + id));
+        console.info(chalk.blue('Deleting user by id' + id));
 
         dbService.delete(user)
             .then((user) => {

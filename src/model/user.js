@@ -86,7 +86,7 @@ userSchema.statics.findByCredentials = async (email, pwd) => {
     const isMatch = await bcrypt.compare(pwd, user.password)
 
     if (!isMatch) {
-        console.log(chalk.yellow('User found but password mismatch ' + pwd))
+        console.warn(chalk.yellow('User found but password mismatch ' + pwd))
         throw new Error('Unable to login password mismatch.')
     }
 
