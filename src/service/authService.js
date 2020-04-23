@@ -7,7 +7,7 @@ const User = require('../model/user')
 const authService = {
 
     getSecrect() {
-        return process.env.JWT_SECRET || '2TgHgZZkwBU'
+        return process.env.JWT_SECRET
     },
     getExpiresTime() {
         return '1 hour'

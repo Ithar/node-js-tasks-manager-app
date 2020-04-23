@@ -5,7 +5,11 @@
   "main": "app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "env-cmd -f ./config/dev.env --silent nodemon src/app.js"
+    "dev": "env-cmd -f ./config/dev.env nodemon src/index.js",
+    "test" : "env-cmd -f ./config/test.env jest --watch"
+  },
+  "jest": {
+    "testEnvironment" : "node"
   },
   "repository": {
     "type": "git",
@@ -34,6 +38,7 @@
   "devDependencies": {
     "env-cmd": "^10.1.0",
     "jest": "^25.4.0",
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "supertest": "^4.0.2"
   }
 }

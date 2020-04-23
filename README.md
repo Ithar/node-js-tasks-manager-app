@@ -80,11 +80,11 @@ https://git.heroku.com/node-js-task-manager-app-v1-0.git
 
 > heroku create node-js-task-manager-app-v1.0
 
-> heroku config:set JWT_SECRET=2TgHgZZkwBU
+> heroku config:set JWT_SECRET=<prod.env.JWT_SECRET>
 
-> heroku config:set SENDGIRD_API_KEY=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
+> heroku config:set SENDGIRD_API_KEY=<prod.env.SENDGIRD_API_KEY>
 
-> heroku config:set MONGODB_URL="mongodb+srv://taskmanageradmin:ciNHBEdazQ4hw@cluster0-lkosj.mongodb.net/task-manager?retryWrites=true"
+> heroku config:set MONGODB_URL="<prod.env.MONGODB_URL>"
 
 > git push heroku master
 
