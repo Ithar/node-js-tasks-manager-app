@@ -48,21 +48,24 @@ afterAll(done => {
 
 // Login 
 test('User: Should login user', async () => {
-    await request(app).post('/user/login').send({
+    await request(app).post('/user/login')
+    .send({
         email : testUser1.email,
         password : testUser1.password
     }).expect(200)
 })
 
 test('User: Should not login user with invalid email', async () => {
-    await request(app).post('/user/login').send({
+    await request(app).post('/user/login')
+    .send({
         email : "fakeemail@test.com",
         password : testUser1.password
     }).expect(400)
 })
 
 test('User: Should not login user with invalid password', async () => {
-    await request(app).post('/user/login').send({
+    await request(app).post('/user/login')
+    .send({
         email : testUser1.email,
         password : "Invalid#123"
     }).expect(400)
@@ -79,20 +82,23 @@ test('User: Should NOT get user profile', async (done) => {
 
 test('User: Should get user profile', async () => {
     await request(app).get('/user/me')
-        .set('Authorization', `Bearer ${testUser1.token}`) // const token = req.header('Authorization').replace('Bearer ', '')
+        .set('Authorization', `Bearer ${testUser1.token}`)
         .send()
         .expect(200)
 })
 
 // List 
 test('User: Should list all users', async () => {
-    await request(app).get('/users').send().expect(200)
+    await request(app).get('/users')
+    .send()
+    .expect(200)
 })
 
 
 // Create
 test('User: Should create new user', async () =>{
-    await request(app).post('/user').send({
+    await request(app).post('/user')
+    .send({
         "username" : "Jane Doe",
         "email": "jane.doe@test.com",
         "password" : "Test#123"
