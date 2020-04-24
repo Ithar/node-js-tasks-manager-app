@@ -35,7 +35,7 @@ const emailService = {
             console.info(chalk.blue('Registration email sent to: ' + to))
 
         } catch(e) {
-            console.log(chalk.red('Failed to send email due to ' + e))
+            console.error(chalk.red('Failed to send email due to ' + e))
         }
         
     }

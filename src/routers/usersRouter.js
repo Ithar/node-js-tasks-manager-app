@@ -54,7 +54,7 @@ router.patch('/user', auth, (req, res) => {
 })
 
 // File Upload User
-router.post('/user/me/avatar', auth, upload.single('myFile'), (req, res) => {
+router.post('/user/me/avatar', auth, upload.single('profile-pic'), (req, res) => {
 
     userService.saveAvatar(req, res)
     
