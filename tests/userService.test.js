@@ -124,6 +124,29 @@ test('User: Should create new user', async () => {
     expect(response.body.token).not.toBeNull()
 })
 
+// Update 
+test('User: Should update user', async () => {
+
+    const usernameUpdate = 'Test User 1 UPDATED'
+
+    const response = await request(app).patch('/user')
+        .set('Authorization', `Bearer ${testUser1.token}`)
+        .send({
+            "username": usernameUpdate
+        }).expect(200)
+        
+        expect(response.body.username).toBe(usernameUpdate)
+})
+
+test('User: Should not update user', async () => {
+
+    const response = await request(app).patch('/user')
+        .set('Authorization', `Bearer ${testUser1.token}`)
+        .send({
+            "invalid_field": "Bad request"
+        }).expect(400)
+})
+
 // Delete 
 test('User: Should NOT delete user', async () => {
     await request(app).delete('/user')
@@ -144,9 +167,9 @@ test('User: Should delete user', async () => {
 // Avatar 
 test('User: Should upload image', async () => {
     await request(app).post('/user/me/avatar')
-    .set('Authorization', `Bearer ${testUser1.token}`)
-    .attach('profile-pic', 'tests/fixtures/avatar-pic.png')
-    .expect(200)
+        .set('Authorization', `Bearer ${testUser1.token}`)
+        .attach('profile-pic', 'tests/fixtures/avatar-pic.png')
+        .expect(200)
 
     const user = await User.findOne(testUser1._id)
     expect(user.avatar).not.toBeNull()

@@ -123,19 +123,19 @@ const userService = {
         const body = req.body
         const id = user.id
 
-        console.log(chalk.blue('Updateing user with id' + id))
+        console.info(chalk.blue('Updateing user with id:' + id))
 
         const updateFields = Object.keys(body);
 
         if (!this.isValidUpdate(updateFields)) {
-            res.status(400).send({
+            return res.status(400).send({
                 success: false,
                 msg: 'Invalid updates fields user'
             })
         }
 
         try {
-            const updatedUser = await dbService.update(user, body, updateFields )
+            const updatedUser = await dbService.update(user, body, updateFields)
             res.send(updatedUser)
 
         } catch (e) {
