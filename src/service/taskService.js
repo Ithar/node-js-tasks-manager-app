@@ -7,7 +7,7 @@ dbService.connect()
 const taskService = {
 
     async listTasks(req, res) {
-        console.log(chalk.blue('Listing tasks ... '))
+        console.info(chalk.blue('Listing tasks ... '))
 
         const user = req.user
         const dto = await taskService.getQueryPrams(req)
@@ -25,7 +25,7 @@ const taskService = {
 
             res.send(user.myTasks)
         } catch (err) {
-            console.log(chalk.red('Failed to list tasks due to: ' + err))
+            console.error(chalk.red('Failed to list tasks due to: ' + err))
             res.status(500).send({
                 success: false,
                 error: 'Unbale to list tasks at present'
@@ -66,7 +66,7 @@ const taskService = {
     },
     async findTask(req, res) {
         const taskId = req.params.id
-        console.log(chalk.blue('Find task by id:' + taskId))
+        console.info(chalk.blue('Find task by id:' + taskId))
 
         const user = req.user
 
@@ -83,7 +83,7 @@ const taskService = {
         }
     },
     async saveTasks(req, res) {
-        console.log(chalk.blue('Creating a task'))
+        console.info(chalk.blue('Creating a task'))
 
         const task = new Task(req.body);
         task.userId = req.user._id
@@ -110,7 +110,7 @@ const taskService = {
     async deleteTask(req, res) {
         const taskId = req.params.id
         const user = req.user
-        console.log(chalk.blue('Deleting task by id' + taskId));
+        console.info(chalk.blue('Deleting task by id' + taskId));
 
         try {
 
@@ -132,7 +132,7 @@ const taskService = {
             }
 
         } catch (e) {
-            console.log(chalk.red('Delete failed due to ' + e))
+            console.error(chalk.red('Delete failed due to ' + e))
             res.status(500).send({
                 success: false,
                 error: 'An error occured trying to delete a task'
@@ -154,7 +154,7 @@ const taskService = {
         const body = req.body
         const user = req.user
 
-        console.log(chalk.blue('Updateing task with id' + taskId))
+        console.info(chalk.blue('Updateing task with id' + taskId))
 
         const updateFields = Object.keys(body);
 
@@ -179,7 +179,7 @@ const taskService = {
             res.send(updatedTask)
 
         } catch (e) {
-            console.log(chalk.red('Delete failed due to ' + e))
+            console.error(chalk.red('Delete failed due to ' + e))
             res.status(500).send({
                 success: false,
                 error: 'An error occured trying to update a task '

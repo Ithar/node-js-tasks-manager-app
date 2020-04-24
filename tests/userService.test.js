@@ -1,55 +1,26 @@
 const request = require('supertest')
-const mongoose = require('mongoose')
 
+const mockData = require('./fixtures/mockData')
 const User = require('../src/model/user')
-const AuthToken = require('../src/model/authtoken')
-
 const app = require('../src/app')
-const authService = require('../src/service/authService')
 
-const testUser1 = {
-    username: 'Test User 1',
-    email: 'test.user1@test.com',
-    password: 'Test#123'
-}
-
-const testUser2 = {
-    username: 'Test User 2',
-    email: 'test.user2@test.com',
-    password: 'Test#123'
-}
+let mockUser1;
+let mockUser2;
 
 beforeEach(async () => {
 
-    jest.spyOn(console, 'info').mockImplementation(() => { });
-    jest.spyOn(console, 'warn').mockImplementation(() => { });
-    jest.spyOn(console, 'error').mockImplementation(() => { });
+    jest.spyOn(console, 'info').mockImplementation(() => { })
+    jest.spyOn(console, 'warn').mockImplementation(() => { })
+    jest.spyOn(console, 'error').mockImplementation(() => { })
 
-    await User.deleteMany()
-    await AuthToken.deleteMany()
-    const savedUser1 = await new User(testUser1).save()
-    const savedUser2 = await new User(testUser2).save()
-
-    const token = await authService.generateToken(savedUser1)
-    const token2 = await authService.generateToken(savedUser2)
-
-    await new AuthToken({
-        userId: savedUser1._id,
-        token: token
-    }).save()
-
-    await new AuthToken({
-        userId: savedUser2._id,
-        token: token2
-    }).save()
-
-    testUser1.token = token
-    testUser2.token = token2
+    await mockData.init()
+    mockUser1 = await mockData.getMockUser1()
+    mockUser2 = await mockData.getMockUser2()
+    
 })
 
-afterAll(done => {
-    // Closing the DB connection allows Jest to exit successfully.
-    mongoose.connection.close()
+afterAll((done) => {
+    mockData.tearDown();
     done()
 })
 
@@ -57,8 +28,8 @@ afterAll(done => {
 test('User: Should login user', async () => {
     await request(app).post('/user/login')
         .send({
-            email: testUser1.email,
-            password: testUser1.password
+            email: mockUser1.email,
+            password: mockUser1.password
         }).expect(200)
 })
 
@@ -66,14 +37,14 @@ test('User: Should not login user with invalid email', async () => {
     await request(app).post('/user/login')
         .send({
             email: "fakeemail@test.com",
-            password: testUser1.password
+            password: mockUser1.password
         }).expect(400)
 })
 
 test('User: Should not login user with invalid password', async () => {
     await request(app).post('/user/login')
         .send({
-            email: testUser1.email,
+            email: mockUser1.email,
             password: "Invalid#123"
         }).expect(400)
 })
@@ -88,17 +59,9 @@ test('User: Should NOT get user profile', async () => {
 
 test('User: Should get user profile', async () => {
     const response = await request(app).get('/user/me')
-        .set('Authorization', `Bearer ${testUser1.token}`)
+        .set('Authorization', `Bearer ${mockUser1.token}`)
         .send()
-        .expect(200)
-
-    // expect(response.body).toMatchObject({
-    //     user: {
-    //         username : testUser1.username,
-    //         email: testUser1.email
-    //     },
-    //     token : testUser1.token
-    // })    
+        .expect(200)  
 })
 
 // List 
@@ -130,7 +93,7 @@ test('User: Should update user', async () => {
     const usernameUpdate = 'Test User 1 UPDATED'
 
     const response = await request(app).patch('/user')
-        .set('Authorization', `Bearer ${testUser1.token}`)
+        .set('Authorization', `Bearer ${mockUser1.token}`)
         .send({
             "username": usernameUpdate
         }).expect(200)
@@ -141,7 +104,7 @@ test('User: Should update user', async () => {
 test('User: Should not update user', async () => {
 
     const response = await request(app).patch('/user')
-        .set('Authorization', `Bearer ${testUser1.token}`)
+        .set('Authorization', `Bearer ${mockUser1.token}`)
         .send({
             "invalid_field": "Bad request"
         }).expect(400)
@@ -156,21 +119,21 @@ test('User: Should NOT delete user', async () => {
 
 test('User: Should delete user', async () => {
     await request(app).delete('/user')
-        .set('Authorization', `Bearer ${testUser2.token}`)
+        .set('Authorization', `Bearer ${mockUser2.token}`)
         .send()
         .expect(200)
 
-    const user = await User.findById(testUser2._id)
+    const user = await User.findById(mockUser2._id)
     expect(user).toBeNull()
 })
 
 // Avatar 
 test('User: Should upload image', async () => {
     await request(app).post('/user/me/avatar')
-        .set('Authorization', `Bearer ${testUser1.token}`)
+        .set('Authorization', `Bearer ${mockUser1.token}`)
         .attach('profile-pic', 'tests/fixtures/avatar-pic.png')
         .expect(200)
 
-    const user = await User.findOne(testUser1._id)
+    const user = await User.findOne(mockUser1._id)
     expect(user.avatar).not.toBeNull()
 })
